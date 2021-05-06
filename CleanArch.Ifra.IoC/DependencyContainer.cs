@@ -6,6 +6,12 @@ using CleanArch.Application.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using CleanArch.Domain.Interfaces;
 using CleanArch.Infra.Data.Repository;
+using CleanArch.Domain.Core.Bus;
+using CleanArch.Domain.Commands;
+using CleanArch.Infra.Bus;
+using MediatR;
+using CleanArch.Domain.CommandHandlers;
+using CleanArch.Infra.Data.Context;
 
 namespace CleanArch.Ifra.IoC
 {
@@ -13,11 +19,18 @@ namespace CleanArch.Ifra.IoC
     {
         public static void RegisterServices(IServiceCollection services)
         {
+            //Domain InMemoryBus MediatR
+            services.AddScoped<IMediatorHandler, InMemoryBus>();
+
+            //Domain Handlers
+            services.AddScoped<IRequestHandler<CreateCourseCommand, bool>, CourseCommandHandler>();
+
             //Application Layer 
             services.AddScoped<ICourseService, CourseService>();
 
             //Infra.Data Layer
             services.AddScoped<ICourseRepository, CourseRepository>();
+            services.AddScoped<UniversityDBContext>();
         }
     }
 }
